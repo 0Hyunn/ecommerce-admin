@@ -1,0 +1,30 @@
+{
+  "name": "ecommerce-admin",
+  "version": "1.0.0",
+  "private": true,
+  "description": "쇼핑몰 관리자 시스템 - 모노레포",
+  "scripts": {
+    "dev": "pnpm --filter frontend dev",
+    "dev:frontend": "pnpm --filter frontend dev",
+    "build": "pnpm --filter frontend build",
+    "build:frontend": "pnpm --filter frontend build",
+    "lint": "pnpm --filter frontend lint",
+    "lint:frontend": "pnpm --filter frontend lint",
+    "type-check": "pnpm --recursive --filter './packages/*' type-check",
+    "clean": "pnpm --recursive exec -- rm -rf node_modules dist .next .turbo"
+  },
+  "keywords": [
+    "ecommerce",
+    "admin",
+    "monorepo"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}
