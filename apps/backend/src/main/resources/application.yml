@@ -2,6 +2,11 @@ spring:
   application:
     name: backend
 
+  datasource:
+    url: jdbc:mysql://localhost:3306/kimc
+    username: kimcadmin
+    password: 1998
+
   jpa:
     hibernate:
       ddl-auto: update
