@@ -1,118 +1,174 @@
-"use client";
+type Product = {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  stock: number;
+  status: "active" | "soldout" | "hidden";
+};
 
-import { useQuery } from "@tanstack/react-query";
-import { useExampleStore } from "@/store/example-store";
+// 간단한 더미 상품 데이터
+// 실제 환경에서는 서버 컴포넌트에서 DB/백엔드 API 호출로 대체
+const MOCK_PRODUCTS: Product[] = [
+  {
+    id: "P-20260001",
+    name: "미니멀 베이직 티셔츠",
+    description: "데일리로 입기 좋은 코튼 100% 베이직 티셔츠",
+    price: 19000,
+    category: "상의",
+    stock: 127,
+    status: "active",
+  },
+  {
+    id: "P-20260002",
+    name: "스트레이트 데님 팬츠",
+    description: "슬림 스트레이트 핏의 데일리 데님 팬츠",
+    price: 39000,
+    category: "하의",
+    stock: 42,
+    status: "active",
+  },
+  {
+    id: "P-20260003",
+    name: "라이트 패딩 점퍼",
+    description: "가볍고 따뜻한 경량 패딩 점퍼",
+    price: 69000,
+    category: "아우터",
+    stock: 0,
+    status: "soldout",
+  },
+  {
+    id: "P-20260004",
+    name: "러닝 스니커즈",
+    description: "데일리/런닝 모두 가능한 쿠셔닝 스니커즈",
+    price: 59000,
+    category: "신발",
+    stock: 15,
+    status: "active",
+  },
+];
 
-/**
- * API 데이터를 가져오는 함수 (예시)
- */
-async function fetchExampleData(): Promise<{ message: string; timestamp: string }> {
-  // 실제 API 호출 대신 예시 데이터 반환
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        message: "데이터를 성공적으로 가져왔습니다!",
-        timestamp: new Date().toLocaleString("ko-KR"),
-      });
-    }, 1000);
-  });
+function formatPrice(price: number): string {
+  return price.toLocaleString("ko-KR") + "원";
 }
 
-/**
- * 메인 페이지 컴포넌트
- * TanStack Query, Zustand, Tailwind CSS 사용 예시
- */
 export default function Home() {
-  // TanStack Query 사용 예시
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["example"],
-    queryFn: fetchExampleData,
-  });
-
-  // Zustand 스토어 사용 예시
-  const { count, name, increment, decrement, setName, reset } = useExampleStore();
+  // ✅ 메인 대시보드에서 상품 카드 리스트를 보여주는 서버 컴포넌트
+  //   - 추후 이 부분만 백엔드 연동 로직으로 교체하면 됨
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-      <div className="container mx-auto px-4 py-16">
-        <div className="max-w-4xl mx-auto space-y-8">
-          {/* 헤더 */}
-          <div className="text-center space-y-4">
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-white">Ecommerce Admin 테스트 페이지</h1>
-            <p className="text-lg text-gray-600 dark:text-gray-400">Next.js, TanStack Query, Zustand, Tailwind CSS 통합 테스트</p>
+    <main className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">
+      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
+        {/* 상단 헤더 영역 */}
+        <section className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+          <div className="space-y-2">
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
+              상품 관리
+            </h1>
+            <p className="text-sm text-slate-600 dark:text-slate-400">
+              등록된 상품의 판매 상태와 재고를 한눈에 확인하세요.
+            </p>
           </div>
 
-          {/* TanStack Query 예시 카드 */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-200 dark:border-gray-700">
-            <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">TanStack Query 예시</h2>
-            {isLoading && <div className="text-gray-600 dark:text-gray-400">데이터를 불러오는 중...</div>}
-            {error && <div className="text-red-600 dark:text-red-400">오류가 발생했습니다</div>}
-            {data && (
-              <div className="space-y-2">
-                <p className="text-gray-700 dark:text-gray-300">{data.message}</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">{data.timestamp}</p>
-              </div>
-            )}
-          </div>
-
-          {/* Zustand 예시 카드 */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-200 dark:border-gray-700">
-            <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">Zustand 예시</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">이름</label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="이름을 입력하세요"
-                />
-              </div>
-              <div className="flex items-center gap-4">
-                <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                  카운트: <span className="text-blue-600 dark:text-blue-400">{count}</span>
-                </p>
-              </div>
-              <div className="flex gap-2">
-                <button onClick={decrement} className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md transition-colors font-medium">
-                  감소
-                </button>
-                <button onClick={increment} className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors font-medium">
-                  증가
-                </button>
-                <button onClick={reset} className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-md transition-colors font-medium">
-                  리셋
-                </button>
-              </div>
+          <div className="flex flex-wrap items-center gap-3 text-sm">
+            <div className="rounded-full bg-emerald-50 px-3 py-1 text-emerald-700 ring-1 ring-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-300 dark:ring-emerald-900">
+              총 상품{" "}
+              <span className="font-semibold">
+                {MOCK_PRODUCTS.length.toLocaleString("ko-KR")}
+              </span>
+            </div>
+            <div className="rounded-full bg-slate-50 px-3 py-1 text-slate-700 ring-1 ring-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700">
+              판매 중{" "}
+              <span className="font-semibold">
+                {MOCK_PRODUCTS.filter((product) => product.status === "active").length.toLocaleString("ko-KR")}
+              </span>
             </div>
           </div>
+        </section>
 
-          {/* Tailwind CSS 예시 카드 */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-200 dark:border-gray-700">
-            <h2 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">Tailwind CSS 예시</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-blue-100 dark:bg-blue-900 p-4 rounded-lg">
-                <p className="font-semibold text-blue-900 dark:text-blue-100">Primary</p>
-                <p className="text-sm text-blue-700 dark:text-blue-300">파란색 카드</p>
-              </div>
-              <div className="bg-green-100 dark:bg-green-900 p-4 rounded-lg">
-                <p className="font-semibold text-green-900 dark:text-green-100">Success</p>
-                <p className="text-sm text-green-700 dark:text-green-300">초록색 카드</p>
-              </div>
-              <div className="bg-purple-100 dark:bg-purple-900 p-4 rounded-lg">
-                <p className="font-semibold text-purple-900 dark:text-purple-100">Info</p>
-                <p className="text-sm text-purple-700 dark:text-purple-300">보라색 카드</p>
-              </div>
-            </div>
-          </div>
+        {/* 상품 카드 그리드 */}
+        <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {MOCK_PRODUCTS.map((product) => {
+            const isSoldOut = product.stock === 0 || product.status === "soldout";
 
-          {/* 상태 표시 */}
-          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
-            <p className="text-green-800 dark:text-green-200 font-medium">✅ 모든 의존성이 정상적으로 작동 중입니다!</p>
-            <p className="text-sm text-green-600 dark:text-green-400 mt-1">Next.js 16.1.1 • React 19.2.3 • TanStack Query • Zustand • Tailwind CSS</p>
-          </div>
-        </div>
+            return (
+              <article
+                key={product.id}
+                className="group relative overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900/80"
+              >
+                {/* 상단 상태 배지 영역 */}
+                <div className="flex items-start justify-between gap-2 border-b border-slate-100 px-4 py-3 dark:border-slate-800">
+                  <div className="space-y-1">
+                    <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                      {product.id}
+                    </p>
+                    <h2 className="line-clamp-1 text-sm font-semibold text-slate-900 dark:text-slate-50">
+                      {product.name}
+                    </h2>
+                  </div>
+
+                  <div className="flex flex-col items-end gap-1">
+                    <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700 ring-1 ring-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-700">
+                      {product.category}
+                    </span>
+                    <span
+                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                        isSoldOut
+                          ? "bg-rose-50 text-rose-700 ring-1 ring-rose-100 dark:bg-rose-950/40 dark:text-rose-300 dark:ring-rose-900"
+                          : "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-300 dark:ring-emerald-900"
+                      }`}
+                    >
+                      {isSoldOut ? "품절" : "판매 중"}
+                    </span>
+                  </div>
+                </div>
+
+                {/* 본문 정보 영역 */}
+                <div className="flex flex-1 flex-col gap-3 px-4 py-3">
+                  <p className="line-clamp-2 text-xs text-slate-600 dark:text-slate-400">
+                    {product.description}
+                  </p>
+
+                  <div className="mt-1 flex items-end justify-between gap-2">
+                    <div className="space-y-1">
+                      <p className="text-xs text-slate-500 dark:text-slate-500">판매가</p>
+                      <p className="text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-50">
+                        {formatPrice(product.price)}
+                      </p>
+                    </div>
+
+                    <div className="space-y-1 text-right">
+                      <p className="text-xs text-slate-500 dark:text-slate-500">재고</p>
+                      <p
+                        className={`text-sm font-semibold ${
+                          isSoldOut
+                            ? "text-rose-600 dark:text-rose-400"
+                            : product.stock < 20
+                              ? "text-amber-600 dark:text-amber-400"
+                              : "text-emerald-600 dark:text-emerald-400"
+                        }`}
+                      >
+                        {isSoldOut ? "0 (품절)" : `${product.stock.toLocaleString("ko-KR")}개`}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 카드 하단 액션 영역 - 향후 버튼/드롭다운 추가용 자리 */}
+                <div className="flex items-center justify-between border-t border-slate-100 bg-slate-50/60 px-4 py-2.5 text-xs text-slate-500 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-400">
+                  <span className="truncate">
+                    {/* 복잡한 로직은 아니지만, 향후 수정 이력을 표시하거나 AB 테스트용 태그를 붙일 수 있는 영역 */}
+                    최근 업데이트: 실시간 동기화 준비됨
+                  </span>
+                  <span className="shrink-0 text-[11px] font-medium uppercase tracking-wide text-slate-400">
+                    상세 관리 &gt;
+                  </span>
+                </div>
+              </article>
+            );
+          })}
+        </section>
       </div>
     </main>
   );
