@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { ZodIssue } from "zod"; 
+import type { ZodIssue } from "zod";
 import { z } from "zod";
 import Link from "next/link";
 
@@ -9,10 +9,7 @@ import Link from "next/link";
 // - 클라이언트에서 1차 검증을 수행해 불필요한 서버 요청을 줄임
 const loginSchema = z.object({
   email: z.string().email("올바른 이메일 형식이 아닙니다."),
-  password: z
-    .string()
-    .min(8, "비밀번호는 최소 8자 이상이어야 합니다.")
-    .max(64, "비밀번호는 최대 64자까지 가능합니다."),
+  password: z.string().min(8, "비밀번호는 최소 8자 이상이어야 합니다.").max(64, "비밀번호는 최대 64자까지 가능합니다."),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
@@ -36,12 +33,10 @@ export default function LoginPage() {
       }));
 
       // 사용자가 입력을 수정할 때, 해당 필드의 에러 메시지를 즉시 제거
-      setFormErrors(
-        (previousFormErrors: Partial<Record<keyof LoginFormValues, string>>) => ({
-          ...previousFormErrors,
-          [field]: undefined,
-        }),
-      );
+      setFormErrors((previousFormErrors: Partial<Record<keyof LoginFormValues, string>>) => ({
+        ...previousFormErrors,
+        [field]: undefined,
+      }));
     };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
@@ -76,17 +71,11 @@ export default function LoginPage() {
 
     try {
       // TODO: 실제 로그인 API 연동 시 이 부분을 백엔드 호출로 교체
-      // 여기서는 데모 목적의 딜레이만 추가
       await new Promise((resolve) => setTimeout(resolve, 800));
 
-      // 실제 구현에서는 토큰 저장, 라우팅 (예: /dashboard) 등 수행
-      // 예: router.push("/dashboard");
-      // 데모에서는 단순히 콘솔에만 출력
-      // eslint-disable-next-line no-console
       console.log("로그인 요청:", parsed.data);
     } catch (error) {
       // 예상치 못한 오류에 대한 안전한 처리
-      // 한국어 메시지로 사용자에게만 간단히 안내
       setSubmitErrorMessage("로그인 중 알 수 없는 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
     } finally {
       setIsSubmitting(false);
@@ -100,20 +89,13 @@ export default function LoginPage() {
     <main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-slate-100 to-slate-200 px-4 dark:from-slate-950 dark:to-slate-900">
       <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white/90 p-8 shadow-lg backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/90">
         <div className="mb-8 space-y-2 text-center">
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
-            관리자 로그인
-          </h1>
-          <p className="text-sm text-slate-600 dark:text-slate-400">
-            쇼핑몰 관리자 계정으로 대시보드에 접근합니다.
-          </p>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-50">로그인</h1>
+          <p className="text-sm text-slate-600 dark:text-slate-400">zod 활용 폼 검증 기능 구현 완료, 스타일은 수정 필요</p>
         </div>
 
         <form className="space-y-5" onSubmit={handleSubmit} noValidate>
           <div className="space-y-1.5">
-            <label
-              htmlFor="email"
-              className="block text-xs font-medium uppercase tracking-wide text-slate-600 dark:text-slate-300"
-            >
+            <label htmlFor="email" className="block text-xs font-medium uppercase tracking-wide text-slate-600 dark:text-slate-300">
               이메일
             </label>
             <input
@@ -129,16 +111,11 @@ export default function LoginPage() {
               } bg-white/90 dark:bg-slate-900/80`}
               placeholder="admin@example.com"
             />
-            {hasEmailError && (
-              <p className="mt-1 text-xs text-rose-600 dark:text-rose-400">{formErrors.email}</p>
-            )}
+            {hasEmailError && <p className="mt-1 text-xs text-rose-600 dark:text-rose-400">{formErrors.email}</p>}
           </div>
 
           <div className="space-y-1.5">
-            <label
-              htmlFor="password"
-              className="block text-xs font-medium uppercase tracking-wide text-slate-600 dark:text-slate-300"
-            >
+            <label htmlFor="password" className="block text-xs font-medium uppercase tracking-wide text-slate-600 dark:text-slate-300">
               비밀번호
             </label>
             <input
@@ -154,9 +131,7 @@ export default function LoginPage() {
               } bg-white/90 dark:bg-slate-900/80`}
               placeholder="비밀번호를 입력하세요"
             />
-            {hasPasswordError && (
-              <p className="mt-1 text-xs text-rose-600 dark:text-rose-400">{formErrors.password}</p>
-            )}
+            {hasPasswordError && <p className="mt-1 text-xs text-rose-600 dark:text-rose-400">{formErrors.password}</p>}
           </div>
 
           {submitErrorMessage && (
@@ -176,10 +151,7 @@ export default function LoginPage() {
 
         <div className="mt-6 flex items-center justify-between text-xs text-slate-500 dark:text-slate-500">
           <span>테스트 페이지 · 실제 인증 연동 전</span>
-          <Link
-            href="/"
-            className="font-medium text-slate-900 underline-offset-2 hover:underline dark:text-slate-200"
-          >
+          <Link href="/" className="font-medium text-slate-900 underline-offset-2 hover:underline dark:text-slate-200">
             메인으로 돌아가기
           </Link>
         </div>
@@ -187,4 +159,3 @@ export default function LoginPage() {
     </main>
   );
 }
-
